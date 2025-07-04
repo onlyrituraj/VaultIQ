@@ -22,8 +22,12 @@ const PortfolioDashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [expandedWidgets, setExpandedWidgets] = useState({});
 
-  // State for real data from Supabase
-  const [portfolioData, setPortfolioData] = useState(null);
+  // Initialize state with safe defaults to prevent null errors
+  const [portfolioData, setPortfolioData] = useState({
+    totalValue: '0.00',
+    change24h: 0,
+    changeValue: '0.00'
+  });
   const [allocationData, setAllocationData] = useState([]);
   const [topAssets, setTopAssets] = useState([]);
   const [recentTransactions, setRecentTransactions] = useState([]);
@@ -37,140 +41,200 @@ const PortfolioDashboard = () => {
   const [assetChannel, setAssetChannel] = useState(null);
   const [alertChannel, setAlertChannel] = useState(null);
 
-  // Load portfolio data
+  // Load portfolio data with comprehensive error handling
   const loadPortfolioData = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
 
     try {
       setError(null);
       
-      // Load portfolios
-      const portfoliosResult = await portfolioService.getPortfolios();
-      if (portfoliosResult?.success && portfoliosResult?.data?.length > 0) {
-        const portfolio = portfoliosResult.data[0]; // Use first portfolio
-        
-        setPortfolioData({
-          totalValue: portfolio?.total_value?.toFixed(2) || '0.00',
-          change24h: portfolio?.total_change_percent_24h || 0,
-          changeValue: portfolio?.total_change_24h?.toFixed(2) || '0.00'
-        });
+      // Load portfolios with error handling
+      try {
+        const portfoliosResult = await portfolioService.getPortfolios();
+        if (portfoliosResult?.success && portfoliosResult?.data?.length > 0) {
+          const portfolio = portfoliosResult.data[0]; // Use first portfolio
+          
+          setPortfolioData({
+            totalValue: portfolio?.total_value?.toFixed(2) || '0.00',
+            change24h: portfolio?.total_change_percent_24h || 0,
+            changeValue: portfolio?.total_change_24h?.toFixed(2) || '0.00'
+          });
 
-        // Transform portfolio assets to allocation data
-        if (portfolio?.portfolio_assets?.length > 0) {
-          const allocation = portfolio.portfolio_assets.map(asset => ({
-            name: asset?.assets?.symbol || 'Unknown',
-            value: parseFloat(asset?.current_value || 0),
-            percentage: parseFloat(asset?.current_value || 0) / parseFloat(portfolio?.total_value || 1) * 100
-          }));
-          setAllocationData(allocation);
+          // Transform portfolio assets to allocation data
+          if (portfolio?.portfolio_assets?.length > 0) {
+            const allocation = portfolio.portfolio_assets.map(asset => ({
+              name: asset?.assets?.symbol || 'Unknown',
+              value: parseFloat(asset?.current_value || 0),
+              percentage: parseFloat(asset?.current_value || 0) / parseFloat(portfolio?.total_value || 1) * 100
+            }));
+            setAllocationData(allocation);
+          }
+        } else {
+          // No portfolios found - set safe defaults
+          setPortfolioData({
+            totalValue: '0.00',
+            change24h: 0,
+            changeValue: '0.00'
+          });
+          setAllocationData([]);
         }
+      } catch (portfolioError) {
+        console.log('Error loading portfolios:', portfolioError);
+        // Keep default values, don't crash
       }
 
-      // Load top performing assets
-      const topAssetsResult = await assetService.getTopPerformingAssets(6);
-      if (topAssetsResult?.success) {
-        const formattedAssets = topAssetsResult.data.map(asset => ({
-          symbol: asset?.symbol || '',
-          name: asset?.name || '',
-          price: parseFloat(asset?.current_price || 0),
-          change: parseFloat(asset?.change_percent_24h || 0),
-          logo: asset?.logo_url || ''
-        }));
-        setTopAssets(formattedAssets);
+      // Load top performing assets with error handling
+      try {
+        const topAssetsResult = await assetService.getTopPerformingAssets(6);
+        if (topAssetsResult?.success && topAssetsResult?.data) {
+          const formattedAssets = topAssetsResult.data.map(asset => ({
+            symbol: asset?.symbol || '',
+            name: asset?.name || '',
+            price: parseFloat(asset?.current_price || 0),
+            change: parseFloat(asset?.change_percent_24h || 0),
+            logo: asset?.logo_url || ''
+          }));
+          setTopAssets(formattedAssets);
+        }
+      } catch (assetsError) {
+        console.log('Error loading top assets:', assetsError);
+        // Keep empty array, don't crash
       }
 
-      // Load recent transactions
-      const transactionsResult = await portfolioService.getRecentTransactions(null, 6);
-      if (transactionsResult?.success) {
-        const formattedTransactions = transactionsResult.data.map(tx => ({
-          id: tx?.id,
-          type: tx?.type,
-          asset: { 
-            symbol: tx?.assets?.symbol || '', 
-            logo: tx?.assets?.logo_url || '' 
-          },
-          amount: parseFloat(tx?.amount || 0),
-          value: parseFloat(tx?.total_value || 0),
-          timestamp: new Date(tx?.created_at)
-        }));
-        setRecentTransactions(formattedTransactions);
+      // Load recent transactions with error handling
+      try {
+        const transactionsResult = await portfolioService.getRecentTransactions(null, 6);
+        if (transactionsResult?.success && transactionsResult?.data) {
+          const formattedTransactions = transactionsResult.data.map(tx => ({
+            id: tx?.id,
+            type: tx?.type,
+            asset: { 
+              symbol: tx?.assets?.symbol || '', 
+              logo: tx?.assets?.logo_url || '' 
+            },
+            amount: parseFloat(tx?.amount || 0),
+            value: parseFloat(tx?.total_value || 0),
+            timestamp: new Date(tx?.created_at)
+          }));
+          setRecentTransactions(formattedTransactions);
+        }
+      } catch (transactionsError) {
+        console.log('Error loading transactions:', transactionsError);
+        // Keep empty array, don't crash
       }
 
-      // Load price alerts
-      const alertsResult = await alertService.getPriceAlerts();
-      if (alertsResult?.success) {
-        const formattedAlerts = alertsResult.data.map(alert => ({
-          id: alert?.id,
-          asset: { 
-            symbol: alert?.assets?.symbol || '', 
-            logo: alert?.assets?.logo_url || '' 
-          },
-          condition: alert?.condition,
-          price: parseFloat(alert?.target_price || 0),
-          currentPrice: parseFloat(alert?.assets?.current_price || 0),
-          enabled: alert?.is_enabled || false
-        }));
-        setPriceAlerts(formattedAlerts);
+      // Load price alerts with error handling
+      try {
+        const alertsResult = await alertService.getPriceAlerts();
+        if (alertsResult?.success && alertsResult?.data) {
+          const formattedAlerts = alertsResult.data.map(alert => ({
+            id: alert?.id,
+            asset: { 
+              symbol: alert?.assets?.symbol || '', 
+              logo: alert?.assets?.logo_url || '' 
+            },
+            condition: alert?.condition,
+            price: parseFloat(alert?.target_price || 0),
+            currentPrice: parseFloat(alert?.assets?.current_price || 0),
+            enabled: alert?.is_enabled || false
+          }));
+          setPriceAlerts(formattedAlerts);
+        }
+      } catch (alertsError) {
+        console.log('Error loading alerts:', alertsError);
+        // Keep empty array, don't crash
       }
 
       // Generate performance data (mock for now - would come from historical data)
+      const currentValue = parseFloat(portfolioData?.totalValue?.replace(',', '') || 0);
       const mockPerformance = [
-        { date: 'Jan 1', value: 98234 },
-        { date: 'Jan 8', value: 105678 },
-        { date: 'Jan 15', value: 112345 },
-        { date: 'Jan 22', value: 108901 },
-        { date: 'Jan 29', value: 118567 },
-        { date: 'Feb 5', value: parseFloat(portfolioData?.totalValue?.replace(',', '') || 124567) },
-        { date: 'Feb 12', value: 127890 },
-        { date: 'Feb 19', value: 122456 },
-        { date: 'Feb 26', value: parseFloat(portfolioData?.totalValue?.replace(',', '') || 124567) }
+        { date: 'Jan 1', value: Math.max(currentValue * 0.8, 98234) },
+        { date: 'Jan 8', value: Math.max(currentValue * 0.85, 105678) },
+        { date: 'Jan 15', value: Math.max(currentValue * 0.9, 112345) },
+        { date: 'Jan 22', value: Math.max(currentValue * 0.87, 108901) },
+        { date: 'Jan 29', value: Math.max(currentValue * 0.95, 118567) },
+        { date: 'Feb 5', value: currentValue || 124567 },
+        { date: 'Feb 12', value: Math.max(currentValue * 1.02, 127890) },
+        { date: 'Feb 19', value: Math.max(currentValue * 0.98, 122456) },
+        { date: 'Feb 26', value: currentValue || 124567 }
       ];
       setPerformanceData(mockPerformance);
 
     } catch (error) {
-      setError('Failed to load portfolio data. Please try again.');
       console.log('Error loading portfolio data:', error);
+      setError('Unable to load portfolio data. This might be because the database tables haven\'t been set up yet. Please check the setup instructions.');
+      
+      // Set safe defaults even on error
+      setPortfolioData({
+        totalValue: '0.00',
+        change24h: 0,
+        changeValue: '0.00'
+      });
+      setAllocationData([]);
+      setTopAssets([]);
+      setRecentTransactions([]);
+      setPriceAlerts([]);
+      setPerformanceData([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Setup real-time subscriptions
+  // Setup real-time subscriptions with error handling
   const setupSubscriptions = () => {
     if (!user?.id) return;
 
-    // Subscribe to portfolio changes
-    const portfolioSub = portfolioService.subscribeToPortfolioChanges(
-      userProfile?.id,
-      () => {
+    try {
+      // Subscribe to portfolio changes
+      const portfolioSub = portfolioService.subscribeToPortfolioChanges(
+        userProfile?.id,
+        () => {
+          loadPortfolioData();
+        }
+      );
+      setPortfolioChannel(portfolioSub);
+    } catch (error) {
+      console.log('Error setting up portfolio subscription:', error);
+    }
+
+    try {
+      // Subscribe to asset changes
+      const assetSub = assetService.subscribeToAssetChanges(() => {
         loadPortfolioData();
-      }
-    );
-    setPortfolioChannel(portfolioSub);
+      });
+      setAssetChannel(assetSub);
+    } catch (error) {
+      console.log('Error setting up asset subscription:', error);
+    }
 
-    // Subscribe to asset changes
-    const assetSub = assetService.subscribeToAssetChanges(() => {
-      loadPortfolioData();
-    });
-    setAssetChannel(assetSub);
-
-    // Subscribe to alert changes
-    const alertSub = alertService.subscribeToAlertChanges(() => {
-      loadPortfolioData();
-    });
-    setAlertChannel(alertSub);
+    try {
+      // Subscribe to alert changes
+      const alertSub = alertService.subscribeToAlertChanges(() => {
+        loadPortfolioData();
+      });
+      setAlertChannel(alertSub);
+    } catch (error) {
+      console.log('Error setting up alert subscription:', error);
+    }
   };
 
   // Cleanup subscriptions
   const cleanupSubscriptions = () => {
-    if (portfolioChannel) {
-      portfolioService.unsubscribeFromChanges(portfolioChannel);
-    }
-    if (assetChannel) {
-      assetService.unsubscribeFromChanges(assetChannel);
-    }
-    if (alertChannel) {
-      alertService.unsubscribeFromChanges(alertChannel);
+    try {
+      if (portfolioChannel) {
+        portfolioService.unsubscribeFromChanges(portfolioChannel);
+      }
+      if (assetChannel) {
+        assetService.unsubscribeFromChanges(assetChannel);
+      }
+      if (alertChannel) {
+        alertService.unsubscribeFromChanges(alertChannel);
+      }
+    } catch (error) {
+      console.log('Error cleaning up subscriptions:', error);
     }
   };
 
@@ -322,14 +386,40 @@ const PortfolioDashboard = () => {
                 Sign in to view your personal portfolio data. This is a demo of the portfolio dashboard.
               </p>
             </div>
-            {/* ... rest of preview content ... */}
+            
+            {/* Demo content for preview mode */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="xl:col-span-2">
+                <PortfolioSummaryCard 
+                  portfolioData={{
+                    totalValue: '124,567.89',
+                    change24h: 5.2,
+                    changeValue: '6,234.56'
+                  }}
+                  onCurrencyToggle={handleCurrencyToggle}
+                />
+              </div>
+              <div className="lg:col-span-1">
+                <AssetAllocationChart 
+                  data={[
+                    { name: 'BTC', value: 50000, percentage: 40 },
+                    { name: 'ETH', value: 30000, percentage: 24 },
+                    { name: 'SOL', value: 20000, percentage: 16 },
+                    { name: 'ADA', value: 15000, percentage: 12 },
+                    { name: 'Others', value: 9567.89, percentage: 8 }
+                  ]}
+                  isExpanded={expandedWidgets.allocation}
+                  onToggleExpand={() => handleWidgetToggle('allocation')}
+                />
+              </div>
+            </div>
           </div>
         </main>
       </div>
     );
   }
 
-  // Show error state
+  // Show error state with database setup instructions
   if (error) {
     return (
       <div className="min-h-screen bg-background">
@@ -339,14 +429,23 @@ const PortfolioDashboard = () => {
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
               <div className="flex items-center gap-2">
                 <Icon name="AlertCircle" size={16} />
-                <span className="font-medium">Error</span>
+                <span className="font-medium">Database Setup Required</span>
               </div>
               <p className="text-sm mt-1">{error}</p>
+              <div className="mt-3 text-sm">
+                <p className="font-medium">To fix this issue:</p>
+                <ol className="list-decimal list-inside mt-1 space-y-1">
+                  <li>Go to your <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer" className="underline">Supabase Dashboard</a></li>
+                  <li>Select your project and open the SQL Editor</li>
+                  <li>Copy the migration SQL from <code>supabase/migrations/20241216120000_cryptofolio_portfolio_management.sql</code></li>
+                  <li>Paste and run the SQL to create the required tables</li>
+                </ol>
+              </div>
               <button 
                 onClick={handleRefresh}
-                className="mt-2 text-sm underline hover:no-underline"
+                className="mt-3 bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors"
               >
-                Try again
+                Try Again After Setup
               </button>
             </div>
           </div>
