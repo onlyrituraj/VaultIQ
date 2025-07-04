@@ -3,6 +3,8 @@ import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
 import ScrollToTop from "components/ScrollToTop";
 import ErrorBoundary from "components/ErrorBoundary";
 // Add your imports here
+import Login from "pages/login";
+import PortfolioConnection from "pages/portfolio-connection";
 import AuthenticationWalletConnection from "pages/authentication-wallet-connection";
 import PortfolioDashboard from "pages/portfolio-dashboard";
 import TransactionHistoryAnalytics from "pages/transaction-history-analytics";
@@ -18,7 +20,9 @@ const Routes = () => {
       <ScrollToTop />
       <RouterRoutes>
         {/* Define your routes here */}
-        <Route path="/" element={<PortfolioDashboard />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/portfolio-connection" element={<PortfolioConnection />} />
         <Route path="/authentication-wallet-connection" element={<AuthenticationWalletConnection />} />
         <Route path="/portfolio-dashboard" element={<PortfolioDashboard />} />
         <Route path="/transaction-history-analytics" element={<TransactionHistoryAnalytics />} />
