@@ -6,6 +6,7 @@ import ProtectedRoute from "components/ui/ProtectedRoute";
 // Add your imports here
 import AuthPage from "pages/auth";
 import WalletConnectionPage from "pages/wallet-connection";
+import Web3Dashboard from "pages/web3-dashboard";
 import PortfolioDashboard from "pages/portfolio-dashboard";
 import TransactionHistoryAnalytics from "pages/transaction-history-analytics";
 import MarketAnalysisWatchlist from "pages/market-analysis-watchlist";
@@ -26,6 +27,10 @@ const Routes = () => {
           </ProtectedRoute>
         } />
         
+        {/* Web3 Dashboard - Main route */}
+        <Route path="/" element={<Web3Dashboard />} />
+        <Route path="/web3-dashboard" element={<Web3Dashboard />} />
+        
         {/* Protected routes */}
         <Route path="/wallet-connection" element={
           <ProtectedRoute requireAuth={true}>
@@ -33,17 +38,8 @@ const Routes = () => {
           </ProtectedRoute>
         } />
         
-        <Route path="/" element={
-          <ProtectedRoute requireAuth={false}>
-            <PortfolioDashboard />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/portfolio-dashboard" element={
-          <ProtectedRoute requireAuth={false}>
-            <PortfolioDashboard />
-          </ProtectedRoute>
-        } />
+        {/* Legacy portfolio routes - now redirect to Web3 Dashboard */}
+        <Route path="/portfolio-dashboard" element={<Web3Dashboard />} />
         
         <Route path="/transaction-history-analytics" element={
           <ProtectedRoute requireAuth={false}>
