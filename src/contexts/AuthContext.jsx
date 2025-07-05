@@ -104,6 +104,26 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Sign in with Google
+  const signInWithGoogle = async () => {
+    try {
+      setAuthError(null);
+      const result = await authService.signInWithGoogle();
+
+      if (!result?.success) {
+        setAuthError(result?.error || "Google sign-in failed");
+        return { success: false, error: result?.error };
+      }
+
+      return { success: true, data: result.data };
+    } catch (error) {
+      const errorMsg = "Something went wrong with Google sign-in. Please try again.";
+      setAuthError(errorMsg);
+      console.log("Google sign in error:", error);
+      return { success: false, error: errorMsg };
+    }
+  };
+
   // Sign up function
   const signUp = async (email, password, userData = {}) => {
     try {
@@ -200,6 +220,7 @@ export function AuthProvider({ children }) {
     loading,
     authError,
     signIn,
+    signInWithGoogle,
     signUp,
     signOut,
     updateProfile,

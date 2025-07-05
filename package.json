@@ -5,11 +5,16 @@
   "dependencies": {
     "@dhiwise/component-tagger": "^1.0.9",
     "@reduxjs/toolkit": "^2.6.1",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.39.0",
     "@tailwindcss/forms": "^0.5.7",
+    "@tanstack/react-query": "^5.81.5",
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@wagmi/connectors": "^5.8.5",
+    "@wagmi/core": "^2.17.3",
     "axios": "^1.8.4",
     "d3": "^7.9.0",
     "date-fns": "^4.1.0",
@@ -26,7 +31,9 @@
     "redux": "^5.0.1",
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-elevation": "^2.0.0",
-    "tailwindcss-fluid-type": "^2.0.7"
+    "tailwindcss-fluid-type": "^2.0.7",
+    "viem": "^2.31.7",
+    "wagmi": "^2.15.6"
   },
   "scripts": {
     "start": "vite",

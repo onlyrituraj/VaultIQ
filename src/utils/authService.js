@@ -26,6 +26,33 @@ const authService = {
     }
   },
 
+  // Sign in with Google
+  signInWithGoogle: async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/wallet-connection`
+        }
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      if (error?.message?.includes('Failed to fetch') || 
+          error?.message?.includes('AuthRetryableFetchError')) {
+        return { 
+          success: false, 
+          error: 'Cannot connect to authentication service. Your Supabase project may be paused or inactive. Please check your Supabase dashboard and resume your project if needed.' 
+        };
+      }
+      return { success: false, error: 'Something went wrong with Google sign-in. Please try again.' };
+    }
+  },
+
   // Sign up with email and password
   signUp: async (email, password, userData = {}) => {
     try {

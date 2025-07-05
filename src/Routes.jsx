@@ -2,8 +2,10 @@ import React from "react";
 import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
 import ScrollToTop from "components/ScrollToTop";
 import ErrorBoundary from "components/ErrorBoundary";
+import ProtectedRoute from "components/ui/ProtectedRoute";
 // Add your imports here
-import AuthenticationWalletConnection from "pages/authentication-wallet-connection";
+import AuthPage from "pages/auth";
+import WalletConnectionPage from "pages/wallet-connection";
 import PortfolioDashboard from "pages/portfolio-dashboard";
 import TransactionHistoryAnalytics from "pages/transaction-history-analytics";
 import MarketAnalysisWatchlist from "pages/market-analysis-watchlist";
@@ -17,14 +19,63 @@ const Routes = () => {
       <ErrorBoundary>
       <ScrollToTop />
       <RouterRoutes>
-        {/* Define your routes here */}
-        <Route path="/" element={<PortfolioDashboard />} />
-        <Route path="/authentication-wallet-connection" element={<AuthenticationWalletConnection />} />
-        <Route path="/portfolio-dashboard" element={<PortfolioDashboard />} />
-        <Route path="/transaction-history-analytics" element={<TransactionHistoryAnalytics />} />
-        <Route path="/market-analysis-watchlist" element={<MarketAnalysisWatchlist />} />
-        <Route path="/asset-portfolio-management" element={<AssetPortfolioManagement />} />
-        <Route path="/settings-profile-management" element={<SettingsProfileManagement />} />
+        {/* Public routes */}
+        <Route path="/auth" element={
+          <ProtectedRoute requireAuth={false}>
+            <AuthPage />
+          </ProtectedRoute>
+        } />
+        
+        {/* Protected routes */}
+        <Route path="/wallet-connection" element={
+          <ProtectedRoute requireAuth={true}>
+            <WalletConnectionPage />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/" element={
+          <ProtectedRoute requireAuth={false}>
+            <PortfolioDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/portfolio-dashboard" element={
+          <ProtectedRoute requireAuth={false}>
+            <PortfolioDashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/transaction-history-analytics" element={
+          <ProtectedRoute requireAuth={false}>
+            <TransactionHistoryAnalytics />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/market-analysis-watchlist" element={
+          <ProtectedRoute requireAuth={false}>
+            <MarketAnalysisWatchlist />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/asset-portfolio-management" element={
+          <ProtectedRoute requireAuth={false}>
+            <AssetPortfolioManagement />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/settings-profile-management" element={
+          <ProtectedRoute requireAuth={false}>
+            <SettingsProfileManagement />
+          </ProtectedRoute>
+        } />
+        
+        {/* Legacy routes for backward compatibility */}
+        <Route path="/authentication-wallet-connection" element={
+          <ProtectedRoute requireAuth={false}>
+            <AuthPage />
+          </ProtectedRoute>
+        } />
+        
         <Route path="*" element={<NotFound />} />
       </RouterRoutes>
       </ErrorBoundary>

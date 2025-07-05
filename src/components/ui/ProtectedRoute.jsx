@@ -21,12 +21,12 @@ const ProtectedRoute = ({ children, requireAuth = true }) => {
 
   // If route requires authentication but user is not logged in
   if (requireAuth && !user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
   // If route doesn't require authentication but user is logged in (like login page)
-  if (!requireAuth && user) {
-    return <Navigate to="/portfolio-dashboard" replace />;
+  if (!requireAuth && user && location.pathname === '/auth') {
+    return <Navigate to="/wallet-connection" replace />;
   }
 
   return children;
