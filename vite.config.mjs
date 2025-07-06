@@ -17,5 +17,20 @@ export default defineConfig({
     host: "0.0.0.0",
     strictPort: true,
     allowedHosts: ['.amazonaws.com', '.builtwithrocket.new']
+  },
+  optimizeDeps: {
+    exclude: [
+      '@noble/hashes',
+      '@walletconnect/ethereum-provider',
+      '@walletconnect/relay-auth',
+      '@walletconnect/core',
+      '@walletconnect/utils',
+      '@reown/appkit-utils',
+      'viem',
+      'lit-html',
+      'readable-stream',
+      '@coinbase/wallet-sdk',
+      'dayjs'
+    ]
   }
 });
