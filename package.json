@@ -5,7 +5,8 @@
   "scripts": {
     "start": "vite",
     "build": "vite build --sourcemap",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "netlify": "npm run build"
   },
   "dependencies": {
     "@dhiwise/component-tagger": "^1.0.9",
@@ -73,3 +74,4 @@
     ]
   }
 }
+
