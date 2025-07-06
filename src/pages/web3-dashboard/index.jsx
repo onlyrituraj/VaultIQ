@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAccount, useDisconnect, useEnsName } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAppKit } from '@reown/appkit/react';
 import { useDeFi } from '../../contexts/DeFiContext';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
@@ -14,7 +14,7 @@ import YieldFarming from './components/YieldFarming';
 const Web3Dashboard = () => {
   const { address, isConnected, chain } = useAccount();
   const { disconnect } = useDisconnect();
-  const { open } = useWeb3Modal();
+  const { open } = useAppKit();
   const { data: ensName } = useEnsName({ address });
   const { portfolioData, isLoading, error, refreshPortfolio } = useDeFi();
   const [activeTab, setActiveTab] = useState('overview');

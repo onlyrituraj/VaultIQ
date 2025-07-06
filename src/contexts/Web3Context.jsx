@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { createWeb3Modal } from '@web3modal/wagmi/react';
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
+import { createAppKit } from '@reown/appkit/react';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { WagmiProvider } from 'wagmi';
 import { arbitrum, mainnet, polygon, optimism, base, bsc, avalanche } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -11,7 +11,7 @@ const Web3Context = createContext();
 // Get projectId from environment
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'demo-project-id';
 
-// Create wagmi config
+// Create wagmi adapter
 const metadata = {
   name: 'CryptoFolio',
   description: 'Advanced Web3 Portfolio Management',
@@ -20,22 +20,23 @@ const metadata = {
 };
 
 const chains = [mainnet, polygon, arbitrum, optimism, base, bsc, avalanche];
-const config = defaultWagmiConfig({
+
+const wagmiAdapter = new WagmiAdapter({
   chains,
   projectId,
-  metadata,
-  enableWalletConnect: true,
-  enableInjected: true,
-  enableEIP6963: true,
-  enableCoinbase: true,
+  networks: chains
 });
 
 // Create modal
-createWeb3Modal({
-  wagmiConfig: config,
+createAppKit({
+  adapters: [wagmiAdapter],
   projectId,
-  enableAnalytics: true,
-  enableOnramp: true,
+  networks: chains,
+  metadata,
+  features: {
+    analytics: true,
+    onramp: true
+  },
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#1E40AF',
@@ -51,7 +52,7 @@ export function Web3Provider({ children }) {
 
   useEffect(() => {
     // Reconnect to previous session
-    reconnect(config).finally(() => {
+    reconnect(wagmiAdapter.wagmiConfig).finally(() => {
       setIsInitialized(true);
     });
   }, []);
@@ -68,9 +69,9 @@ export function Web3Provider({ children }) {
   }
 
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <Web3Context.Provider value={{ config }}>
+        <Web3Context.Provider value={{ config: wagmiAdapter.wagmiConfig }}>
           {children}
         </Web3Context.Provider>
       </QueryClientProvider>
