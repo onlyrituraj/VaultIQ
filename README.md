@@ -1,107 +1,167 @@
-# React
+# CryptoFolio - Advanced Web3 Portfolio Management
 
-A modern React-based project utilizing the latest frontend technologies and tools for building responsive web applications.
+A comprehensive cryptocurrency portfolio management platform built with React, featuring real-time tracking, DeFi integration, and advanced analytics.
 
 ## 🚀 Features
 
-- **React 18** - React version with improved rendering and concurrent features
-- **Vite** - Lightning-fast build tool and development server
-- **Redux Toolkit** - State management with simplified Redux setup
-- **TailwindCSS** - Utility-first CSS framework with extensive customization
-- **React Router v6** - Declarative routing for React applications
-- **Data Visualization** - Integrated D3.js and Recharts for powerful data visualization
-- **Form Management** - React Hook Form for efficient form handling
-- **Animation** - Framer Motion for smooth UI animations
-- **Testing** - Jest and React Testing Library setup
+- **Web3 Integration** - Connect multiple wallets and track across chains
+- **Real-time Portfolio Tracking** - Live price updates and portfolio valuation
+- **DeFi Protocol Support** - Interact with Uniswap, Aave, Compound, and more
+- **Transaction Analytics** - Comprehensive transaction history and analytics
+- **Price Alerts** - Set custom price alerts for your favorite assets
+- **Market Analysis** - Advanced market data and watchlist functionality
+- **Responsive Design** - Optimized for desktop and mobile devices
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 18, Vite, TailwindCSS
+- **Web3**: Wagmi, Reown AppKit, Viem
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth with Google OAuth
+- **Charts**: Recharts, D3.js
+- **State Management**: Redux Toolkit
+- **Deployment**: Netlify
 
 ## 📋 Prerequisites
 
-- Node.js (v14.x or higher)
+- Node.js (v18 or higher)
 - npm or yarn
+- Supabase account
+- WalletConnect Project ID
 
-## 🛠️ Installation
+## 🚀 Quick Start
 
-1. Install dependencies:
+1. **Clone and Install**
    ```bash
+   git clone <repository-url>
+   cd cryptofolio
    npm install
-   # or
-   yarn install
+   ```
+
+2. **Environment Setup**
+   ```bash
+   cp .env.example .env
    ```
    
-2. Start the development server:
+   Fill in your environment variables:
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+   - `VITE_WALLETCONNECT_PROJECT_ID`: Your WalletConnect project ID
+
+3. **Database Setup**
+   - Go to your Supabase dashboard
+   - Navigate to SQL Editor
+   - Run the migration script from `supabase/migrations/20241216120000_cryptofolio_portfolio_management.sql`
+
+4. **Start Development Server**
    ```bash
    npm start
-   # or
-   yarn start
    ```
 
-## 📁 Project Structure
+## 🗄️ Database Schema
 
-```
-react_app/
-├── public/             # Static assets
-├── src/
-│   ├── components/     # Reusable UI components
-│   ├── pages/          # Page components
-│   ├── styles/         # Global styles and Tailwind configuration
-│   ├── App.jsx         # Main application component
-│   ├── Routes.jsx      # Application routes
-│   └── index.jsx       # Application entry point
-├── .env                # Environment variables
-├── index.html          # HTML template
-├── package.json        # Project dependencies and scripts
-├── tailwind.config.js  # Tailwind CSS configuration
-└── vite.config.js      # Vite configuration
-```
+The application uses a comprehensive PostgreSQL schema with the following main tables:
 
-## 🧩 Adding Routes
+- `user_profiles` - User account information
+- `portfolios` - User portfolio containers
+- `assets` - Cryptocurrency asset metadata
+- `portfolio_assets` - User holdings and positions
+- `transactions` - Transaction history
+- `price_alerts` - User-defined price alerts
 
-To add new routes to the application, update the `Routes.jsx` file:
+## 🔐 Authentication
 
-```jsx
-import { useRoutes } from "react-router-dom";
-import HomePage from "pages/HomePage";
-import AboutPage from "pages/AboutPage";
+- Email/password authentication
+- Google OAuth integration
+- Secure session management with Supabase Auth
 
-const ProjectRoutes = () => {
-  let element = useRoutes([
-    { path: "/", element: <HomePage /> },
-    { path: "/about", element: <AboutPage /> },
-    // Add more routes as needed
-  ]);
+## 🌐 Web3 Features
 
-  return element;
-};
-```
-
-## 🎨 Styling
-
-This project uses Tailwind CSS for styling. The configuration includes:
-
-- Forms plugin for form styling
-- Typography plugin for text styling
-- Aspect ratio plugin for responsive elements
-- Container queries for component-specific responsive design
-- Fluid typography for responsive text
-- Animation utilities
+- Multi-wallet support (MetaMask, WalletConnect, Coinbase Wallet)
+- Multi-chain support (Ethereum, Polygon, Arbitrum, Optimism, Base)
+- DeFi protocol integration
+- Token swapping
+- NFT gallery
+- Transaction tracking
 
 ## 📱 Responsive Design
 
-The app is built with responsive design using Tailwind CSS breakpoints.
+The application is fully responsive with:
+- Mobile-first design approach
+- Adaptive navigation
+- Touch-friendly interactions
+- Progressive Web App capabilities
 
+## 🚀 Deployment
 
-## 📦 Deployment
-
-Build the application for production:
+The application is configured for easy deployment on Netlify:
 
 ```bash
 npm run build
 ```
 
-## 🙏 Acknowledgments
+The build artifacts will be in the `build/` directory, ready for deployment.
 
-- Built with [Rocket.new](https://rocket.new)
-- Powered by React and Vite
-- Styled with Tailwind CSS
+## 🔧 Configuration
 
-Built with ❤️ on Rocket.new
+### Supabase Setup
+1. Create a new Supabase project
+2. Run the provided migration script
+3. Configure authentication providers
+4. Update environment variables
+
+### WalletConnect Setup
+1. Create a project at https://cloud.walletconnect.com
+2. Get your project ID
+3. Add to environment variables
+
+## 📊 Features Overview
+
+### Portfolio Management
+- Real-time portfolio valuation
+- Asset allocation visualization
+- Performance tracking
+- Profit/loss calculations
+
+### Transaction Analytics
+- Comprehensive transaction history
+- Advanced filtering and search
+- Export capabilities
+- Visual analytics
+
+### Market Data
+- Real-time price feeds
+- Market analysis tools
+- Watchlist functionality
+- Price alerts
+
+### DeFi Integration
+- Yield farming opportunities
+- Liquidity pool management
+- Staking rewards tracking
+- Protocol interaction
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions:
+- Check the documentation
+- Review the database setup instructions
+- Ensure all environment variables are configured
+- Verify Supabase project is active
+
+## 🔗 Links
+
+- [Live Demo](https://cryptofolio-demo.netlify.app)
+- [Supabase Documentation](https://supabase.com/docs)
+- [WalletConnect Documentation](https://docs.walletconnect.com)
