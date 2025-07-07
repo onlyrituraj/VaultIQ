@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vite",
-    "build": "vite build --sourcemap",
-    "serve": "vite preview",
+    "start": "npx vite",
+    "build": "npx vite build --sourcemap",
+    "serve": "npx vite preview",
     "netlify": "npm run build"
   },
   "dependencies": {
@@ -74,4 +74,3 @@
     ]
   }
 }
-
