@@ -18,6 +18,16 @@ export function AuthProvider({ children }) {
         setLoading(true);
         setAuthError(null);
 
+        // Check if we're in demo mode
+        const isDemoMode = !import.meta.env.VITE_SUPABASE_URL || 
+                          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co';
+
+        if (isDemoMode) {
+          console.log('Running in demo mode - authentication disabled');
+          setLoading(false);
+          return;
+        }
+
         const sessionResult = await authService.getSession();
 
         if (
@@ -39,8 +49,12 @@ export function AuthProvider({ children }) {
         }
       } catch (error) {
         if (isMounted) {
-          setAuthError("Failed to initialize authentication");
           console.log("Auth initialization error:", error);
+          // Don't set error in demo mode
+          if (import.meta.env.VITE_SUPABASE_URL && 
+              import.meta.env.VITE_SUPABASE_URL !== 'https://demo.supabase.co') {
+            setAuthError("Failed to initialize authentication");
+          }
         }
       } finally {
         if (isMounted) {
@@ -51,32 +65,44 @@ export function AuthProvider({ children }) {
 
     initializeAuth();
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = authService.onAuthStateChange(async (event, session) => {
-      if (!isMounted) return;
+    // Listen for auth changes only if not in demo mode
+    let subscription;
+    const isDemoMode = !import.meta.env.VITE_SUPABASE_URL || 
+                      import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co';
 
-      setAuthError(null);
+    if (!isDemoMode) {
+      try {
+        const {
+          data: { subscription: authSubscription },
+        } = authService.onAuthStateChange(async (event, session) => {
+          if (!isMounted) return;
 
-      if (event === "SIGNED_IN" && session?.user) {
-        setUser(session.user);
+          setAuthError(null);
 
-        // Fetch user profile for signed in user
-        authService.getUserProfile(session.user.id).then((profileResult) => {
-          if (profileResult?.success && isMounted) {
-            setUserProfile(profileResult.data);
-          } else if (isMounted) {
-            setAuthError(profileResult?.error || "Failed to load user profile");
+          if (event === "SIGNED_IN" && session?.user) {
+            setUser(session.user);
+
+            // Fetch user profile for signed in user
+            authService.getUserProfile(session.user.id).then((profileResult) => {
+              if (profileResult?.success && isMounted) {
+                setUserProfile(profileResult.data);
+              } else if (isMounted) {
+                setAuthError(profileResult?.error || "Failed to load user profile");
+              }
+            });
+          } else if (event === "SIGNED_OUT") {
+            setUser(null);
+            setUserProfile(null);
+          } else if (event === "TOKEN_REFRESHED" && session?.user) {
+            setUser(session.user);
           }
         });
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-        setUserProfile(null);
-      } else if (event === "TOKEN_REFRESHED" && session?.user) {
-        setUser(session.user);
+
+        subscription = authSubscription;
+      } catch (error) {
+        console.log('Auth subscription error:', error);
       }
-    });
+    }
 
     return () => {
       isMounted = false;

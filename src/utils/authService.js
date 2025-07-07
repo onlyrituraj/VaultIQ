@@ -4,6 +4,15 @@ const authService = {
   // Sign in with email and password
   signIn: async (email, password) => {
     try {
+      // Check if we're in demo mode
+      if (!import.meta.env.VITE_SUPABASE_URL || 
+          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co') {
+        return { 
+          success: false, 
+          error: 'Demo mode - Please configure Supabase to enable authentication' 
+        };
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -19,7 +28,7 @@ const authService = {
           error?.message?.includes('AuthRetryableFetchError')) {
         return { 
           success: false, 
-          error: 'Cannot connect to authentication service. Your Supabase project may be paused or inactive. Please check your Supabase dashboard and resume your project if needed.' 
+          error: 'Cannot connect to authentication service. Please check your Supabase configuration.' 
         };
       }
       return { success: false, error: 'Something went wrong during login. Please try again.' };
@@ -29,6 +38,14 @@ const authService = {
   // Sign in with Google
   signInWithGoogle: async () => {
     try {
+      if (!import.meta.env.VITE_SUPABASE_URL || 
+          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co') {
+        return { 
+          success: false, 
+          error: 'Demo mode - Please configure Supabase to enable authentication' 
+        };
+      }
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -42,13 +59,6 @@ const authService = {
 
       return { success: true, data };
     } catch (error) {
-      if (error?.message?.includes('Failed to fetch') || 
-          error?.message?.includes('AuthRetryableFetchError')) {
-        return { 
-          success: false, 
-          error: 'Cannot connect to authentication service. Your Supabase project may be paused or inactive. Please check your Supabase dashboard and resume your project if needed.' 
-        };
-      }
       return { success: false, error: 'Something went wrong with Google sign-in. Please try again.' };
     }
   },
@@ -56,6 +66,14 @@ const authService = {
   // Sign up with email and password
   signUp: async (email, password, userData = {}) => {
     try {
+      if (!import.meta.env.VITE_SUPABASE_URL || 
+          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co') {
+        return { 
+          success: false, 
+          error: 'Demo mode - Please configure Supabase to enable authentication' 
+        };
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -73,13 +91,6 @@ const authService = {
 
       return { success: true, data };
     } catch (error) {
-      if (error?.message?.includes('Failed to fetch') || 
-          error?.message?.includes('AuthRetryableFetchError')) {
-        return { 
-          success: false, 
-          error: 'Cannot connect to authentication service. Your Supabase project may be paused or inactive. Please check your Supabase dashboard and resume your project if needed.' 
-        };
-      }
       return { success: false, error: 'Something went wrong during signup. Please try again.' };
     }
   },
@@ -102,6 +113,11 @@ const authService = {
   // Get current session
   getSession: async () => {
     try {
+      if (!import.meta.env.VITE_SUPABASE_URL || 
+          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co') {
+        return { success: true, data: { session: null } };
+      }
+
       const { data, error } = await supabase.auth.getSession();
 
       if (error) {
@@ -110,14 +126,6 @@ const authService = {
 
       return { success: true, data };
     } catch (error) {
-      if (error?.message?.includes('Failed to fetch') || 
-          error?.message?.includes('NetworkError') ||
-          error?.name === 'TypeError' && error?.message?.includes('fetch')) {
-        return { 
-          success: false, 
-          error: 'Cannot connect to authentication service. Your Supabase project may be paused or deleted. Please visit your Supabase dashboard to check project status.' 
-        };
-      }
       return { success: false, error: 'Failed to get session' };
     }
   },
@@ -125,6 +133,11 @@ const authService = {
   // Get user profile
   getUserProfile: async (userId) => {
     try {
+      if (!import.meta.env.VITE_SUPABASE_URL || 
+          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co') {
+        return { success: true, data: null };
+      }
+
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -137,14 +150,6 @@ const authService = {
 
       return { success: true, data };
     } catch (error) {
-      if (error?.message?.includes('Failed to fetch') || 
-          error?.message?.includes('NetworkError') ||
-          error?.name === 'TypeError' && error?.message?.includes('fetch')) {
-        return { 
-          success: false, 
-          error: 'Cannot connect to database. Your Supabase project may be paused or deleted. Please visit your Supabase dashboard to check project status.' 
-        };
-      }
       return { success: false, error: 'Failed to load user profile' };
     }
   },
@@ -152,6 +157,11 @@ const authService = {
   // Update user profile
   updateUserProfile: async (userId, updates) => {
     try {
+      if (!import.meta.env.VITE_SUPABASE_URL || 
+          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co') {
+        return { success: false, error: 'Demo mode - database operations disabled' };
+      }
+
       const { data, error } = await supabase
         .from('user_profiles')
         .update(updates)
@@ -165,14 +175,6 @@ const authService = {
 
       return { success: true, data };
     } catch (error) {
-      if (error?.message?.includes('Failed to fetch') || 
-          error?.message?.includes('NetworkError') ||
-          error?.name === 'TypeError' && error?.message?.includes('fetch')) {
-        return { 
-          success: false, 
-          error: 'Cannot connect to database. Your Supabase project may be paused or deleted. Please visit your Supabase dashboard to check project status.' 
-        };
-      }
       return { success: false, error: 'Failed to update profile' };
     }
   },
@@ -180,6 +182,11 @@ const authService = {
   // Reset password
   resetPassword: async (email) => {
     try {
+      if (!import.meta.env.VITE_SUPABASE_URL || 
+          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co') {
+        return { success: false, error: 'Demo mode - password reset disabled' };
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(email);
 
       if (error) {
@@ -188,20 +195,18 @@ const authService = {
 
       return { success: true };
     } catch (error) {
-      if (error?.message?.includes('Failed to fetch') || 
-          error?.message?.includes('AuthRetryableFetchError')) {
-        return { 
-          success: false, 
-          error: 'Cannot connect to authentication service. Your Supabase project may be paused or inactive. Please check your Supabase dashboard and resume your project if needed.' 
-        };
-      }
       return { success: false, error: 'Something went wrong sending reset email. Please try again.' };
     }
   },
 
   // Listen to auth state changes
   onAuthStateChange: (callback) => {
-    return supabase.auth.onAuthStateChange(callback);
+    try {
+      return supabase.auth.onAuthStateChange(callback);
+    } catch (error) {
+      console.log('Auth state change listener error:', error);
+      return { data: { subscription: { unsubscribe: () => {} } } };
+    }
   }
 };
 
