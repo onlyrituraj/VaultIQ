@@ -1,24 +1,57 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
-import tagger from "@dhiwise/component-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // This changes the out put dir from dist to build
-  // comment this out if that isn't relevant for your project
+  // Build configuration
   build: {
     outDir: "build",
     chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['lucide-react'],
+          web3: ['@reown/appkit', 'wagmi', 'viem'],
+          supabase: ['@supabase/supabase-js', '@supabase/auth-ui-react']
+        }
+      }
+    }
   },
-  plugins: [tsconfigPaths(), react(), tagger()],
+  
+  // Plugins
+  plugins: [
+    tsconfigPaths(), 
+    react({
+      // Add React refresh for better development experience
+      fastRefresh: true
+    })
+  ],
+  
+  // Development server
   server: {
-    port: "4028",
+    port: 4028,
     host: "0.0.0.0",
     strictPort: true,
-    allowedHosts: ['.amazonaws.com', '.builtwithrocket.new']
+    allowedHosts: ['.amazonaws.com', '.builtwithrocket.new', '.netlify.app']
   },
+  
+  // Preview server (for production builds)
+  preview: {
+    port: 4028,
+    host: "0.0.0.0"
+  },
+  
+  // Dependency optimization
   optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'lucide-react'
+    ],
     exclude: [
       '@noble/hashes',
       '@walletconnect/ethereum-provider',
@@ -32,5 +65,22 @@ export default defineConfig({
       '@coinbase/wallet-sdk',
       'dayjs'
     ]
+  },
+  
+  // Define global constants
+  define: {
+    global: 'globalThis',
+  },
+  
+  // Resolve configuration
+  resolve: {
+    alias: {
+      // Add any path aliases if needed
+      '@': '/src',
+      'components': '/src/components',
+      'pages': '/src/pages',
+      'utils': '/src/utils',
+      'contexts': '/src/contexts'
+    }
   }
 });
