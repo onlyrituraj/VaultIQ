@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useAccount, useDisconnect, useEnsName } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
-import { useDeFi } from '../../contexts/DeFiContext';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import PortfolioOverview from './components/PortfolioOverview';
@@ -12,12 +9,65 @@ import TransactionHistory from './components/TransactionHistory';
 import YieldFarming from './components/YieldFarming';
 
 const Web3Dashboard = () => {
-  const { address, isConnected, chain } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { open } = useAppKit();
-  const { data: ensName } = useEnsName({ address });
-  const { portfolioData, isLoading, error, refreshPortfolio } = useDeFi();
   const [activeTab, setActiveTab] = useState('overview');
+  const [isConnected, setIsConnected] = useState(false);
+  const [address, setAddress] = useState(null);
+  const [chain, setChain] = useState({ id: 1 });
+  const [portfolioData, setPortfolioData] = useState({
+    totalValue: 124567.89,
+    tokens: [
+      {
+        symbol: 'ETH',
+        balance: 2.5,
+        price: 2500,
+        value: 6250,
+        change24h: 2.5
+      },
+      {
+        symbol: 'BTC',
+        balance: 0.1,
+        price: 43000,
+        value: 4300,
+        change24h: 1.2
+      },
+      {
+        symbol: 'USDC',
+        balance: 5000,
+        price: 1,
+        value: 5000,
+        change24h: 0.0
+      }
+    ],
+    defiPositions: [
+      {
+        protocol: 'Uniswap V3',
+        type: 'Liquidity Pool',
+        pair: 'ETH/USDC',
+        value: 5000,
+        apy: 12.5,
+        rewards: 125
+      },
+      {
+        protocol: 'Aave',
+        type: 'Lending',
+        asset: 'USDC',
+        value: 3000,
+        apy: 8.2,
+        rewards: 82
+      }
+    ],
+    nfts: [
+      {
+        collection: 'Demo NFT Collection',
+        tokenId: '1234',
+        value: 15000,
+        image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&h=200&fit=crop'
+      }
+    ],
+    transactions: []
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: 'LayoutDashboard' },
@@ -29,6 +79,7 @@ const Web3Dashboard = () => {
   ];
 
   const truncateAddress = (addr) => {
+    if (!addr) return '';
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
 
@@ -45,6 +96,32 @@ const Web3Dashboard = () => {
     return chains[chainId] || `Chain ${chainId}`;
   };
 
+  const handleConnect = async () => {
+    try {
+      // Check if we have Web3 capabilities
+      if (typeof window !== 'undefined' && window.ethereum) {
+        // Try to connect to MetaMask or other injected wallet
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts.length > 0) {
+          setAddress(accounts[0]);
+          setIsConnected(true);
+        }
+      } else {
+        // Demo mode - simulate connection
+        setAddress('0x742d35Cc6634C0532925a3b8D4C0532925a3b8D4');
+        setIsConnected(true);
+      }
+    } catch (error) {
+      console.log('Connection error:', error);
+      setError('Failed to connect wallet');
+    }
+  };
+
+  const handleDisconnect = () => {
+    setAddress(null);
+    setIsConnected(false);
+  };
+
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-background">
@@ -58,7 +135,7 @@ const Web3Dashboard = () => {
                 </div>
                 <span className="text-xl font-semibold text-text-primary">CryptoFolio Web3</span>
               </div>
-              <Button onClick={() => open()}>
+              <Button onClick={handleConnect}>
                 Connect Wallet
               </Button>
             </div>
@@ -98,13 +175,17 @@ const Web3Dashboard = () => {
             </div>
 
             <Button 
-              onClick={() => open()} 
+              onClick={handleConnect} 
               size="lg"
               className="px-8 py-4 text-lg"
             >
               <Icon name="Wallet" size={20} className="mr-2" />
               Connect Your Wallet
             </Button>
+
+            <div className="mt-8 text-sm text-text-muted">
+              <p>Demo mode available - no wallet required to explore features</p>
+            </div>
           </div>
         </main>
       </div>
@@ -143,13 +224,13 @@ const Web3Dashboard = () => {
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <div className="text-sm font-medium text-text-primary">
-                    {ensName || truncateAddress(address)}
+                    {truncateAddress(address)}
                   </div>
                   <div className="text-xs text-text-secondary">Connected</div>
                 </div>
                 <Button
                   variant="outline"
-                  onClick={() => disconnect()}
+                  onClick={handleDisconnect}
                   className="p-2"
                 >
                   <Icon name="LogOut" size={16} />
@@ -192,10 +273,10 @@ const Web3Dashboard = () => {
             </div>
             <p className="text-sm mt-1">{error}</p>
             <button 
-              onClick={refreshPortfolio}
+              onClick={() => setError(null)}
               className="mt-2 text-sm underline hover:no-underline"
             >
-              Try again
+              Dismiss
             </button>
           </div>
         </div>
