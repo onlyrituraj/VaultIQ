@@ -14,7 +14,9 @@ const AuthPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    fullName: ''
+    fullName: '',
+    walletAddress: '',
+    preferredCurrency: 'USD'
   });
   const [formError, setFormError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +24,7 @@ const AuthPage = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (!authLoading && user) {
-      const from = location.state?.from?.pathname || '/wallet-connection';
+      const from = location.state?.from?.pathname || '/portfolio-dashboard';
       navigate(from, { replace: true });
     }
   }, [user, authLoading, navigate, location]);
@@ -80,12 +82,20 @@ const AuthPage = () => {
         result = await signIn(formData.email, formData.password);
       } else {
         result = await signUp(formData.email, formData.password, {
-          full_name: formData.fullName
+          fullName: formData.fullName,
+          walletAddress: formData.walletAddress || null,
+          preferredCurrency: formData.preferredCurrency,
+          notificationPreferences: {
+            email: true,
+            push: false,
+            price_alerts: true,
+            portfolio_updates: true
+          }
         });
       }
 
       if (result?.success) {
-        const from = location.state?.from?.pathname || '/wallet-connection';
+        const from = location.state?.from?.pathname || '/portfolio-dashboard';
         navigate(from, { replace: true });
       }
     } catch (error) {
@@ -105,7 +115,7 @@ const AuthPage = () => {
       
       if (result?.success) {
         // Google OAuth will redirect automatically
-        // The redirect URL is set to /wallet-connection in authService
+        // The redirect URL is set to /portfolio-dashboard in authService
       }
     } catch (error) {
       setFormError('Google sign-in failed. Please try again.');
@@ -120,7 +130,9 @@ const AuthPage = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      fullName: ''
+      fullName: '',
+      walletAddress: '',
+      preferredCurrency: 'USD'
     });
     setFormError('');
     clearError();
@@ -128,10 +140,12 @@ const AuthPage = () => {
 
   const fillDemoCredentials = () => {
     setFormData({
-      email: 'demo@VoltIQ.com',
+      email: 'demo@cryptofolio.com',
       password: 'demo123',
       confirmPassword: 'demo123',
-      fullName: 'Demo User'
+      fullName: 'Demo User',
+      walletAddress: '',
+      preferredCurrency: 'USD'
     });
     setFormError('');
     clearError();
@@ -277,15 +291,42 @@ const AuthPage = () => {
                 />
 
                 {mode === 'signup' && (
-                  <Input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm Password"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    disabled={isLoading}
-                    required
-                  />
+                  <>
+                    <Input
+                      type="password"
+                      name="confirmPassword"
+                      placeholder="Confirm Password"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      disabled={isLoading}
+                      required
+                    />
+                    
+                    <Input
+                      type="text"
+                      name="walletAddress"
+                      placeholder="Wallet Address (Optional)"
+                      value={formData.walletAddress}
+                      onChange={handleInputChange}
+                      disabled={isLoading}
+                    />
+                    
+                    <div className="relative">
+                      <select
+                        name="preferredCurrency"
+                        value={formData.preferredCurrency}
+                        onChange={handleInputChange}
+                        disabled={isLoading}
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      >
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="BTC">BTC - Bitcoin</option>
+                        <option value="ETH">ETH - Ethereum</option>
+                      </select>
+                    </div>
+                  </>
                 )}
 
                 <Button
