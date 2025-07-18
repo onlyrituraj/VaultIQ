@@ -15,7 +15,11 @@ CREATE TABLE public.user_profiles (
     full_name TEXT NOT NULL,
     role public.user_role DEFAULT 'standard'::public.user_role,
     avatar_url TEXT,
-    currency_preference TEXT DEFAULT 'USD',
+    wallet_address TEXT,
+    wallet_type TEXT DEFAULT 'metamask',
+    wallet_connected_at TIMESTAMPTZ,
+    preferred_currency TEXT DEFAULT 'USD',
+    notification_preferences JSONB DEFAULT '{"email": true, "push": false, "price_alerts": true, "portfolio_updates": true}'::jsonb,
     timezone TEXT DEFAULT 'UTC',
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
@@ -104,6 +108,7 @@ CREATE TABLE public.price_alerts (
 
 -- 3. Indexes
 CREATE INDEX idx_user_profiles_email ON public.user_profiles(email);
+CREATE INDEX idx_user_profiles_wallet_address ON public.user_profiles(wallet_address);
 CREATE INDEX idx_portfolios_user_id ON public.portfolios(user_id);
 CREATE INDEX idx_portfolio_assets_portfolio_id ON public.portfolio_assets(portfolio_id);
 CREATE INDEX idx_portfolio_assets_asset_id ON public.portfolio_assets(asset_id);

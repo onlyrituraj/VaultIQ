@@ -18,16 +18,6 @@ export function AuthProvider({ children }) {
         setLoading(true);
         setAuthError(null);
 
-        // Check if we're in demo mode
-        const isDemoMode = !import.meta.env.VITE_SUPABASE_URL || 
-                          import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co';
-
-        if (isDemoMode) {
-          console.log('Running in demo mode - authentication disabled');
-          setLoading(false);
-          return;
-        }
-
         const sessionResult = await authService.getSession();
 
         if (
@@ -49,12 +39,8 @@ export function AuthProvider({ children }) {
         }
       } catch (error) {
         if (isMounted) {
-          console.log("Auth initialization error:", error);
-          // Don't set error in demo mode
-          if (import.meta.env.VITE_SUPABASE_URL && 
-              import.meta.env.VITE_SUPABASE_URL !== 'https://demo.supabase.co') {
-            setAuthError("Failed to initialize authentication");
-          }
+          console.error("Auth initialization error:", error);
+          setAuthError("Failed to initialize authentication");
         }
       } finally {
         if (isMounted) {
@@ -65,43 +51,38 @@ export function AuthProvider({ children }) {
 
     initializeAuth();
 
-    // Listen for auth changes only if not in demo mode
+    // Listen for auth changes
     let subscription;
-    const isDemoMode = !import.meta.env.VITE_SUPABASE_URL || 
-                      import.meta.env.VITE_SUPABASE_URL === 'https://demo.supabase.co';
+    try {
+      const {
+        data: { subscription: authSubscription },
+      } = authService.onAuthStateChange(async (event, session) => {
+        if (!isMounted) return;
 
-    if (!isDemoMode) {
-      try {
-        const {
-          data: { subscription: authSubscription },
-        } = authService.onAuthStateChange(async (event, session) => {
-          if (!isMounted) return;
+        setAuthError(null);
 
-          setAuthError(null);
+        if (event === "SIGNED_IN" && session?.user) {
+          setUser(session.user);
 
-          if (event === "SIGNED_IN" && session?.user) {
-            setUser(session.user);
+          // Fetch user profile for signed in user
+          authService.getUserProfile(session.user.id).then((profileResult) => {
+            if (profileResult?.success && isMounted) {
+              setUserProfile(profileResult.data);
+            } else if (isMounted) {
+              setAuthError(profileResult?.error || "Failed to load user profile");
+            }
+          });
+        } else if (event === "SIGNED_OUT") {
+          setUser(null);
+          setUserProfile(null);
+        } else if (event === "TOKEN_REFRESHED" && session?.user) {
+          setUser(session.user);
+        }
+      });
 
-            // Fetch user profile for signed in user
-            authService.getUserProfile(session.user.id).then((profileResult) => {
-              if (profileResult?.success && isMounted) {
-                setUserProfile(profileResult.data);
-              } else if (isMounted) {
-                setAuthError(profileResult?.error || "Failed to load user profile");
-              }
-            });
-          } else if (event === "SIGNED_OUT") {
-            setUser(null);
-            setUserProfile(null);
-          } else if (event === "TOKEN_REFRESHED" && session?.user) {
-            setUser(session.user);
-          }
-        });
-
-        subscription = authSubscription;
-      } catch (error) {
-        console.log('Auth subscription error:', error);
-      }
+      subscription = authSubscription;
+    } catch (error) {
+      console.error('Auth subscription error:', error);
     }
 
     return () => {
@@ -240,6 +221,34 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Connect wallet function
+  const connectWallet = async (walletAddress, walletType = 'metamask') => {
+    try {
+      setAuthError(null);
+
+      if (!user?.id) {
+        const errorMsg = "User not authenticated";
+        setAuthError(errorMsg);
+        return { success: false, error: errorMsg };
+      }
+
+      const result = await authService.updateWalletAddress(user.id, walletAddress, walletType);
+
+      if (!result?.success) {
+        setAuthError(result?.error || "Wallet connection failed");
+        return { success: false, error: result?.error };
+      }
+
+      setUserProfile(result.data);
+      return { success: true, data: result.data };
+    } catch (error) {
+      const errorMsg = "Something went wrong connecting wallet. Please try again.";
+      setAuthError(errorMsg);
+      console.log("Connect wallet error:", error);
+      return { success: false, error: errorMsg };
+    }
+  };
+
   const value = {
     user,
     userProfile,
@@ -251,6 +260,7 @@ export function AuthProvider({ children }) {
     signOut,
     updateProfile,
     resetPassword,
+    connectWallet,
     clearError: () => setAuthError(null),
   };
 

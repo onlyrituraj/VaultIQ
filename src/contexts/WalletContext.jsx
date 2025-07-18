@@ -16,7 +16,7 @@ const config = createConfig({
   connectors: [
     metaMask(),
     walletConnect({
-      projectId: 'your-walletconnect-project-id', // You'll need to get this from WalletConnect
+      projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || '2f05a7cde2bb14f2b3a85e33bef2e766',
     }),
     coinbaseWallet({
       appName: 'VoltIQ',
@@ -149,19 +149,27 @@ export function WalletProvider({ children }) {
     }
   };
 
+  const connectMetaMask = async () => {
+    return await connectWallet('io.metamask');
+  };
+
+  const connectWalletConnect = async () => {
+    return await connectWallet('walletConnect');
+  };
+
+  const connectCoinbase = async () => {
+    return await connectWallet('coinbaseWalletSDK');
+  };
+
   const getWalletInfo = () => {
     if (!account || !isConnected) return null;
 
     return {
       address: account.address,
       chainId: account.chainId,
+      chainName: account.chainId === 1 ? 'Ethereum' : `Chain ${account.chainId}`,
       connector: account.connector?.name,
-      balance: balance ? {
-        value: balance.value,
-        decimals: balance.decimals,
-        symbol: balance.symbol,
-        formatted: balance.formatted,
-      } : null,
+      balance: balance?.formatted || '0',
     };
   };
 
@@ -173,6 +181,9 @@ export function WalletProvider({ children }) {
     error,
     connectedWallets,
     connectWallet,
+    connectMetaMask,
+    connectWalletConnect,
+    connectCoinbase,
     disconnectWallet,
     switchChain,
     getWalletInfo,

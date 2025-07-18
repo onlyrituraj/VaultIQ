@@ -23,7 +23,11 @@ const PortfolioDashboard = () => {
   const [expandedWidgets, setExpandedWidgets] = useState({});
 
   // State for real data from Supabase
-  const [portfolioData, setPortfolioData] = useState(null);
+  const [portfolioData, setPortfolioData] = useState({
+    totalValue: 0,
+    change24h: 0,
+    changeValue: 0
+  });
   const [allocationData, setAllocationData] = useState([]);
   const [topAssets, setTopAssets] = useState([]);
   const [recentTransactions, setRecentTransactions] = useState([]);
@@ -50,9 +54,9 @@ const PortfolioDashboard = () => {
         const portfolio = portfoliosResult.data[0]; // Use first portfolio
         
         setPortfolioData({
-          totalValue: portfolio?.total_value?.toFixed(2) || '0.00',
-          change24h: portfolio?.total_change_percent_24h || 0,
-          changeValue: portfolio?.total_change_24h?.toFixed(2) || '0.00'
+          totalValue: parseFloat(portfolio?.total_value || 0),
+          change24h: parseFloat(portfolio?.total_change_percent_24h || 0),
+          changeValue: parseFloat(portfolio?.total_change_24h || 0)
         });
 
         // Transform portfolio assets to allocation data
@@ -64,6 +68,14 @@ const PortfolioDashboard = () => {
           }));
           setAllocationData(allocation);
         }
+      } else {
+        // No portfolios found - set default empty portfolio data
+        setPortfolioData({
+          totalValue: 0,
+          change24h: 0,
+          changeValue: 0
+        });
+        setAllocationData([]);
       }
 
       // Load top performing assets
@@ -114,16 +126,17 @@ const PortfolioDashboard = () => {
       }
 
       // Generate performance data (mock for now - would come from historical data)
+      const currentValue = portfolioData?.totalValue || 124567;
       const mockPerformance = [
         { date: 'Jan 1', value: 98234 },
         { date: 'Jan 8', value: 105678 },
         { date: 'Jan 15', value: 112345 },
         { date: 'Jan 22', value: 108901 },
         { date: 'Jan 29', value: 118567 },
-        { date: 'Feb 5', value: parseFloat(portfolioData?.totalValue?.replace(',', '') || 124567) },
+        { date: 'Feb 5', value: currentValue },
         { date: 'Feb 12', value: 127890 },
         { date: 'Feb 19', value: 122456 },
-        { date: 'Feb 26', value: parseFloat(portfolioData?.totalValue?.replace(',', '') || 124567) }
+        { date: 'Feb 26', value: currentValue }
       ];
       setPerformanceData(mockPerformance);
 
@@ -361,6 +374,7 @@ const PortfolioDashboard = () => {
         <PortfolioSummaryCard 
           portfolioData={portfolioData}
           onCurrencyToggle={handleCurrencyToggle}
+          loading={loading}
         />
       </div>
       <div className="lg:col-span-1">

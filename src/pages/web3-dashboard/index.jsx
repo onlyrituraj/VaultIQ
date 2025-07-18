@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import PortfolioOverview from './components/PortfolioOverview';
@@ -9,6 +11,8 @@ import TransactionHistory from './components/TransactionHistory';
 import YieldFarming from './components/YieldFarming';
 
 const Web3Dashboard = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState(null);
@@ -135,9 +139,17 @@ const Web3Dashboard = () => {
                 </div>
                 <span className="text-xl font-semibold text-text-primary">VoltIQ Web3</span>
               </div>
-              <Button onClick={handleConnect}>
-                Connect Wallet
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/auth')}
+                >
+                  Sign In
+                </Button>
+                <Button onClick={handleConnect}>
+                  Connect Wallet
+                </Button>
+              </div>
             </div>
           </div>
         </header>
@@ -174,17 +186,31 @@ const Web3Dashboard = () => {
               </div>
             </div>
 
-            <Button 
-              onClick={handleConnect} 
-              size="lg"
-              className="px-8 py-4 text-lg"
-            >
-              <Icon name="Wallet" size={20} className="mr-2" />
-              Connect Your Wallet
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button 
+                onClick={() => navigate('/auth')} 
+                size="lg"
+                className="px-8 py-4 text-lg"
+              >
+                <Icon name="User" size={20} className="mr-2" />
+                Sign Up / Sign In
+              </Button>
+              
+              <span className="text-text-muted">or</span>
+              
+              <Button 
+                onClick={handleConnect} 
+                variant="outline"
+                size="lg"
+                className="px-8 py-4 text-lg"
+              >
+                <Icon name="Wallet" size={20} className="mr-2" />
+                Connect Wallet Only
+              </Button>
+            </div>
 
             <div className="mt-8 text-sm text-text-muted">
-              <p>Demo mode available - no wallet required to explore features</p>
+              <p>Create an account to save your portfolio data and access advanced features</p>
             </div>
           </div>
         </main>
@@ -222,6 +248,15 @@ const Web3Dashboard = () => {
 
               {/* Wallet Info */}
               <div className="flex items-center gap-3">
+                {!user && (
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/auth')}
+                    className="text-sm"
+                  >
+                    Sign In
+                  </Button>
+                )}
                 <div className="text-right">
                   <div className="text-sm font-medium text-text-primary">
                     {truncateAddress(address)}
