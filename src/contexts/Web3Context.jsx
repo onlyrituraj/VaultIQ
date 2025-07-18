@@ -38,9 +38,9 @@ export function Web3Provider({ children }) {
             const { mainnet, polygon, arbitrum, optimism, base } = await import('wagmi/chains');
 
             const metadata = {
-              name: 'CryptoFolio',
+              name: 'VoltIQ',
               description: 'Advanced Web3 Portfolio Management',
-              url: typeof window !== 'undefined' ? window.location.origin : 'https://cryptofolio.app',
+              url: typeof window !== 'undefined' ? window.location.origin : 'https://VoltIQ.app',
               icons: ['https://avatars.githubusercontent.com/u/37784886']
             };
 

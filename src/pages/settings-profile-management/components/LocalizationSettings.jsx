@@ -89,43 +89,43 @@ const LocalizationSettings = ({ isExpanded, onToggle }) => {
   const getLocalizedText = (key) => {
     const translations = {
       en: {
-        welcome: 'Welcome to CryptoFolio',
+        welcome: 'Welcome to VoltIQ',
         portfolio: 'Your Portfolio',
         balance: 'Total Balance',
         transactions: 'Recent Transactions'
       },
       es: {
-        welcome: 'Bienvenido a CryptoFolio',
+        welcome: 'Bienvenido a VoltIQ',
         portfolio: 'Tu Portafolio',
         balance: 'Saldo Total',
         transactions: 'Transacciones Recientes'
       },
       fr: {
-        welcome: 'Bienvenue sur CryptoFolio',
+        welcome: 'Bienvenue sur VoltIQ',
         portfolio: 'Votre Portefeuille',
         balance: 'Solde Total',
         transactions: 'Transactions Récentes'
       },
       de: {
-        welcome: 'Willkommen bei CryptoFolio',
+        welcome: 'Willkommen bei VoltIQ',
         portfolio: 'Ihr Portfolio',
         balance: 'Gesamtsaldo',
         transactions: 'Letzte Transaktionen'
       },
       ja: {
-        welcome: 'CryptoFolioへようこそ',
+        welcome: 'VoltIQへようこそ',
         portfolio: 'あなたのポートフォリオ',
         balance: '総残高',
         transactions: '最近の取引'
       },
       ko: {
-        welcome: 'CryptoFolio에 오신 것을 환영합니다',
+        welcome: 'VoltIQ에 오신 것을 환영합니다',
         portfolio: '귀하의 포트폴리오',
         balance: '총 잔액',
         transactions: '최근 거래'
       },
       zh: {
-        welcome: '欢迎使用CryptoFolio',
+        welcome: '欢迎使用VoltIQ',
         portfolio: '您的投资组合',
         balance: '总余额',
         transactions: '最近交易'
@@ -290,7 +290,7 @@ const LocalizationSettings = ({ isExpanded, onToggle }) => {
                 <h5 className="font-medium text-warning mb-1">Compliance Notice</h5>
                 <p className="text-sm text-warning">
                   Tax regulations vary by jurisdiction. Please consult with a tax professional 
-                  for advice specific to your situation. CryptoFolio provides tools for tracking 
+                  for advice specific to your situation. VoltIQ provides tools for tracking 
                   but does not provide tax advice.
                 </p>
               </div>

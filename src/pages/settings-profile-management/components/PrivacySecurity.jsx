@@ -76,7 +76,7 @@ const PrivacySecurity = ({ isExpanded, onToggle }) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `cryptofolio-export.${exportFormat}`;
+    a.download = `VoltIQ-export.${exportFormat}`;
     a.click();
     URL.revokeObjectURL(url);
   };

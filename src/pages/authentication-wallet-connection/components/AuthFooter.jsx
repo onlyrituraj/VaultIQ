@@ -35,7 +35,7 @@ const AuthFooter = () => {
         
         {/* Copyright */}
         <div className="text-sm text-text-muted">
-          <p>&copy; {currentYear} CryptoFolio. All rights reserved.</p>
+          <p>&copy; {currentYear} VoltIQ. All rights reserved.</p>
           <p className="mt-1">Built for the decentralized future</p>
         </div>
       </div>

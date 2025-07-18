@@ -133,7 +133,7 @@ const Web3Dashboard = () => {
                 <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
                   <Icon name="TrendingUp" size={20} color="white" />
                 </div>
-                <span className="text-xl font-semibold text-text-primary">CryptoFolio Web3</span>
+                <span className="text-xl font-semibold text-text-primary">VoltIQ Web3</span>
               </div>
               <Button onClick={handleConnect}>
                 Connect Wallet
@@ -149,7 +149,7 @@ const Web3Dashboard = () => {
               <Icon name="Wallet" size={48} color="white" />
             </div>
             <h1 className="text-4xl font-bold text-text-primary mb-4">
-              Welcome to CryptoFolio Web3
+              Welcome to VoltIQ Web3
             </h1>
             <p className="text-xl text-text-secondary mb-8 max-w-2xl mx-auto">
               The most advanced Web3 portfolio management platform. Track your DeFi positions, 
@@ -202,7 +202,7 @@ const Web3Dashboard = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
                 <Icon name="TrendingUp" size={20} color="white" />
               </div>
-              <span className="text-xl font-semibold text-text-primary">CryptoFolio Web3</span>
+              <span className="text-xl font-semibold text-text-primary">VoltIQ Web3</span>
             </div>
 
             <div className="flex items-center gap-4">

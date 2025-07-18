@@ -98,7 +98,7 @@ const EmailLoginForm = ({ isLoading, setIsLoading }) => {
 
   const fillDemoCredentials = () => {
     setFormData({
-      email: 'demo@cryptofolio.com',
+      email: 'demo@VoltIQ.com',
       password: 'demo123',
       confirmPassword: 'demo123',
       fullName: 'Demo User'

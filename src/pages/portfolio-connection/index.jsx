@@ -160,7 +160,7 @@ const PortfolioConnection = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
                 <Icon name="TrendingUp" size={20} color="white" />
               </div>
-              <span className="text-xl font-semibold text-text-primary">CryptoFolio</span>
+              <span className="text-xl font-semibold text-text-primary">VoltIQ</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm text-text-secondary">Welcome, {user?.email}</span>

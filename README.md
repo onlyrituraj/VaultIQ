@@ -1,4 +1,4 @@
-# CryptoFolio - Advanced Web3 Portfolio Management
+# VoltIQ - Advanced Web3 Portfolio Management
 
 A comprehensive cryptocurrency portfolio management platform built with React, featuring real-time tracking, DeFi integration, and advanced analytics.
 
@@ -32,26 +32,30 @@ A comprehensive cryptocurrency portfolio management platform built with React, f
 ## 🚀 Quick Start
 
 1. **Clone and Install**
+
    ```bash
    git clone <repository-url>
-   cd cryptofolio
+   cd VoltIQ
    npm install
    ```
 
 2. **Environment Setup**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Fill in your environment variables:
+
    - `VITE_SUPABASE_URL`: Your Supabase project URL
    - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
    - `VITE_WALLETCONNECT_PROJECT_ID`: Your WalletConnect project ID
 
 3. **Database Setup**
+
    - Go to your Supabase dashboard
    - Navigate to SQL Editor
-   - Run the migration script from `supabase/migrations/20241216120000_cryptofolio_portfolio_management.sql`
+   - Run the migration script from `supabase/migrations/20241216120000_VoltIQ_portfolio_management.sql`
 
 4. **Start Development Server**
    ```bash
@@ -87,6 +91,7 @@ The application uses a comprehensive PostgreSQL schema with the following main t
 ## 📱 Responsive Design
 
 The application is fully responsive with:
+
 - Mobile-first design approach
 - Adaptive navigation
 - Touch-friendly interactions
@@ -105,12 +110,14 @@ The build artifacts will be in the `build/` directory, ready for deployment.
 ## 🔧 Configuration
 
 ### Supabase Setup
+
 1. Create a new Supabase project
 2. Run the provided migration script
 3. Configure authentication providers
 4. Update environment variables
 
 ### WalletConnect Setup
+
 1. Create a project at https://cloud.walletconnect.com
 2. Get your project ID
 3. Add to environment variables
@@ -118,24 +125,28 @@ The build artifacts will be in the `build/` directory, ready for deployment.
 ## 📊 Features Overview
 
 ### Portfolio Management
+
 - Real-time portfolio valuation
 - Asset allocation visualization
 - Performance tracking
 - Profit/loss calculations
 
 ### Transaction Analytics
+
 - Comprehensive transaction history
 - Advanced filtering and search
 - Export capabilities
 - Visual analytics
 
 ### Market Data
+
 - Real-time price feeds
 - Market analysis tools
 - Watchlist functionality
 - Price alerts
 
 ### DeFi Integration
+
 - Yield farming opportunities
 - Liquidity pool management
 - Staking rewards tracking
@@ -155,6 +166,7 @@ This project is licensed under the MIT License.
 ## 🆘 Support
 
 For support and questions:
+
 - Check the documentation
 - Review the database setup instructions
 - Ensure all environment variables are configured
@@ -162,6 +174,6 @@ For support and questions:
 
 ## 🔗 Links
 
-- [Live Demo](https://cryptofolio-demo.netlify.app)
+- [Live Demo](https://VoltIQ-demo.netlify.app)
 - [Supabase Documentation](https://supabase.com/docs)
 - [WalletConnect Documentation](https://docs.walletconnect.com)

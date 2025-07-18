@@ -128,7 +128,7 @@ const AuthPage = () => {
 
   const fillDemoCredentials = () => {
     setFormData({
-      email: 'demo@cryptofolio.com',
+      email: 'demo@VoltIQ.com',
       password: 'demo123',
       confirmPassword: 'demo123',
       fullName: 'Demo User'
@@ -195,7 +195,7 @@ const AuthPage = () => {
                 </div>
               </div>
               <h1 className="text-2xl font-bold text-text-primary mb-2">
-                Welcome to CryptoFolio
+                Welcome to VoltIQ
               </h1>
               <p className="text-text-secondary">
                 {mode === 'signin' 
@@ -365,7 +365,7 @@ const AuthPage = () => {
             {/* Footer */}
             <div className="px-6 py-4 bg-surface-secondary border-t border-border text-center">
               <p className="text-xs text-text-muted">
-                Demo Credentials: demo@cryptofolio.com / demo123
+                Demo Credentials: demo@VoltIQ.com / demo123
               </p>
             </div>
           </div>

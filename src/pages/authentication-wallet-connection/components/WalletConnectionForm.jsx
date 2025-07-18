@@ -167,7 +167,7 @@ const WalletConnectionForm = ({ onConnect, isLoading }) => {
           <div>
             <h4 className="font-medium text-text-primary">Security Notice</h4>
             <p className="text-sm text-text-secondary mt-1">
-              CryptoFolio will never ask for your private keys or seed phrases. We only request read-only access to display your portfolio data securely.
+              VoltIQ will never ask for your private keys or seed phrases. We only request read-only access to display your portfolio data securely.
             </p>
           </div>
         </div>

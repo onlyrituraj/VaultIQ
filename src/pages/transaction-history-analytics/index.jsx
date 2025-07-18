@@ -58,7 +58,7 @@ const TransactionHistoryAnalytics = () => {
         await loadTransactions();
         
         // Load saved filters from localStorage
-        const saved = localStorage.getItem('cryptofolio_saved_filters');
+        const saved = localStorage.getItem('VoltIQ_saved_filters');
         if (saved) {
           setSavedFilters(JSON.parse(saved));
         }
@@ -203,7 +203,7 @@ const TransactionHistoryAnalytics = () => {
     
     const updatedFilters = [...savedFilters, newFilter];
     setSavedFilters(updatedFilters);
-    localStorage.setItem('cryptofolio_saved_filters', JSON.stringify(updatedFilters));
+    localStorage.setItem('VoltIQ_saved_filters', JSON.stringify(updatedFilters));
   };
 
   const handleLoadFilter = (savedFilter) => {

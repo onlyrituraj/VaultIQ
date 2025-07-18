@@ -58,7 +58,7 @@ const AuthenticationWalletConnection = () => {
                 </div>
               </div>
               <h1 className="text-2xl font-bold text-text-primary mb-2">
-                Welcome to CryptoFolio
+                Welcome to VoltIQ
               </h1>
               <p className="text-text-secondary">
                 Sign in to access your portfolio or create a new account
@@ -95,7 +95,7 @@ const AuthenticationWalletConnection = () => {
           {/* Additional Info */}
           <div className="mt-8 text-center">
             <p className="text-sm text-text-secondary">
-              Demo Credentials: email: demo@cryptofolio.com, password: demo123
+              Demo Credentials: email: demo@VoltIQ.com, password: demo123
             </p>
           </div>
         </div>

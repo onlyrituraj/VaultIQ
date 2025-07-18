@@ -101,7 +101,7 @@ const Header = () => {
               <Icon name="TrendingUp" size={20} color="white" />
             </div>
             <span className="text-xl font-semibold text-text-primary font-heading">
-              CryptoFolio
+              VoltIQ
             </span>
           </div>
 

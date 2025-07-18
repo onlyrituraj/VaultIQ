@@ -19,7 +19,7 @@ const config = createConfig({
       projectId: 'your-walletconnect-project-id', // You'll need to get this from WalletConnect
     }),
     coinbaseWallet({
-      appName: 'CryptoFolio',
+      appName: 'VoltIQ',
     }),
     injected(),
   ],
