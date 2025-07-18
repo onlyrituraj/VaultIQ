@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createConfig, http, connect, disconnect, getAccount, getBalance, watchAccount } from '@wagmi/core';
 import { mainnet, polygon, arbitrum, optimism, base } from 'viem/chains';
-import { 
-  metaMask, 
-  walletConnect, 
-  coinbaseWallet, 
-  injected 
+import {
+  metaMask,
+  walletConnect,
+  coinbaseWallet,
+  injected
 } from '@wagmi/connectors';
 
 const WalletContext = createContext();
@@ -62,7 +62,7 @@ export function WalletProvider({ children }) {
       onChange: async (account) => {
         setAccount(account);
         setIsConnected(account.isConnected);
-        
+
         if (account.isConnected) {
           await updateBalance(account.address, account.chainId);
           setError(null);
@@ -98,7 +98,7 @@ export function WalletProvider({ children }) {
       }
 
       const result = await connect(config, { connector });
-      
+
       if (result.accounts?.[0]) {
         const walletInfo = {
           id: Date.now().toString(),
@@ -107,7 +107,7 @@ export function WalletProvider({ children }) {
           chainId: result.chainId,
           connectedAt: new Date().toISOString(),
         };
-        
+
         setConnectedWallets(prev => [...prev, walletInfo]);
         await updateBalance(result.accounts[0], result.chainId);
       }

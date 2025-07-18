@@ -21,16 +21,16 @@ const Header = () => {
   //   disconnectWallet,
   //   error: walletError 
   // } = useWallet();
-  const { 
-    isConnected, 
-    account, 
-    disconnectWallet, 
-    getWalletInfo, 
-    connectMetaMask, 
-    connectWalletConnect, 
+  const {
+    isConnected,
+    account,
+    disconnectWallet,
+    getWalletInfo,
+    connectMetaMask,
+    connectWalletConnect,
     connectCoinbase,
     isConnecting,
-    error: walletError 
+    error: walletError
   } = useWallet();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -108,7 +108,7 @@ const Header = () => {
       const result = await disconnectWallet();
       if (result.success) {
         console.log('Wallet disconnected successfully');
-        
+
         // Also update the user profile to remove wallet address
         if (user?.id && userProfile?.wallet_address) {
           await connectWallet(null); // This will clear the wallet address in the database
@@ -126,7 +126,7 @@ const Header = () => {
     try {
       setIsWalletMenuOpen(false);
       let result;
-      
+
       switch (walletType) {
         case 'metamask':
           result = await connectMetaMask();
@@ -227,10 +227,10 @@ const Header = () => {
             <span className="font-semibold font-data">{portfolioValue.total}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Icon 
-              name={portfolioValue.isPositive ? "TrendingUp" : "TrendingDown"} 
-              size={16} 
-              color={portfolioValue.isPositive ? "var(--color-success)" : "var(--color-error)"} 
+            <Icon
+              name={portfolioValue.isPositive ? "TrendingUp" : "TrendingDown"}
+              size={16}
+              color={portfolioValue.isPositive ? "var(--color-success)" : "var(--color-error)"}
             />
             <span className={`text-sm font-medium ${portfolioValue.isPositive ? 'text-success' : 'text-error'}`}>
               {portfolioValue.change}
@@ -242,9 +242,8 @@ const Header = () => {
         <div className="flex items-center gap-3">
           {/* Search */}
           <div className="relative" ref={searchRef}>
-            <div className={`flex items-center transition-all duration-300 ${
-              isSearchExpanded ? 'w-64' : 'w-10'
-            }`}>
+            <div className={`flex items-center transition-all duration-300 ${isSearchExpanded ? 'w-64' : 'w-10'
+              }`}>
               {isSearchExpanded ? (
                 <form onSubmit={handleSearchSubmit} className="w-full">
                   <Input
@@ -255,10 +254,10 @@ const Header = () => {
                     className="w-full pl-10 pr-4"
                     autoFocus
                   />
-                  <Icon 
-                    name="Search" 
-                    size={18} 
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted pointer-events-none" 
+                  <Icon
+                    name="Search"
+                    size={18}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted pointer-events-none"
                   />
                 </form>
               ) : (
@@ -298,14 +297,12 @@ const Header = () => {
                     <button
                       key={notification.id}
                       onClick={() => handleNotificationClick(notification)}
-                      className={`w-full p-4 text-left hover:bg-surface-secondary transition-colors ${
-                        !notification.read ? 'bg-primary-50' : ''
-                      }`}
+                      className={`w-full p-4 text-left hover:bg-surface-secondary transition-colors ${!notification.read ? 'bg-primary-50' : ''
+                        }`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`w-2 h-2 rounded-full mt-2 ${
-                          !notification.read ? 'bg-primary' : 'bg-border'
-                        }`} />
+                        <div className={`w-2 h-2 rounded-full mt-2 ${!notification.read ? 'bg-primary' : 'bg-border'
+                          }`} />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-text-primary">{notification.message}</p>
                           <p className="text-xs text-text-muted mt-1">{notification.time}</p>
@@ -329,9 +326,8 @@ const Header = () => {
               onClick={() => setIsWalletMenuOpen(!isWalletMenuOpen)}
               className="wallet-indicator"
             >
-              <div className={`w-2 h-2 rounded-full ${
-                walletStatus.connected ? 'bg-success' : 'bg-error'
-              }`} />
+              <div className={`w-2 h-2 rounded-full ${walletStatus.connected ? 'bg-success' : 'bg-error'
+                }`} />
               <span className="hidden sm:inline font-data">
                 {walletStatus.connected && walletStatus.address ? truncateAddress(walletStatus.address) : 'Connect'}
               </span>
@@ -355,17 +351,17 @@ const Header = () => {
                         )}
                       </div>
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={handleCopyAddress}
                           className="flex-1"
                         >
                           Copy Address
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={handleWalletDisconnect}
                           className="flex-1"
                         >
@@ -376,16 +372,16 @@ const Header = () => {
                   ) : (
                     <div className="space-y-3">
                       <p className="text-sm text-text-secondary text-center">Connect your wallet to continue</p>
-                      
+
                       {walletError && (
                         <div className="text-xs text-error bg-error-50 p-2 rounded">
                           {walletError}
                         </div>
                       )}
-                      
+
                       <div className="space-y-2">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="w-full flex items-center gap-3"
                           onClick={() => handleConnectWallet('metamask')}
                           disabled={isConnecting}
@@ -395,9 +391,9 @@ const Header = () => {
                           </div>
                           {isConnecting ? 'Connecting...' : 'MetaMask'}
                         </Button>
-                        
-                        <Button 
-                          variant="outline" 
+
+                        <Button
+                          variant="outline"
                           className="w-full flex items-center gap-3"
                           onClick={() => handleConnectWallet('walletconnect')}
                           disabled={isConnecting}
@@ -407,9 +403,9 @@ const Header = () => {
                           </div>
                           {isConnecting ? 'Connecting...' : 'WalletConnect'}
                         </Button>
-                        
-                        <Button 
-                          variant="outline" 
+
+                        <Button
+                          variant="outline"
                           className="w-full flex items-center gap-3"
                           onClick={() => handleConnectWallet('coinbase')}
                           disabled={isConnecting}

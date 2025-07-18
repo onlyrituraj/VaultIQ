@@ -140,8 +140,8 @@ const Web3Dashboard = () => {
                 <span className="text-xl font-semibold text-text-primary">VoltIQ Web3</span>
               </div>
               <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => navigate('/auth')}
                 >
                   Sign In
@@ -164,10 +164,10 @@ const Web3Dashboard = () => {
               Welcome to VoltIQ Web3
             </h1>
             <p className="text-xl text-text-secondary mb-8 max-w-2xl mx-auto">
-              The most advanced Web3 portfolio management platform. Track your DeFi positions, 
+              The most advanced Web3 portfolio management platform. Track your DeFi positions,
               NFTs, and execute trades across multiple chains.
             </p>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               <div className="p-6 bg-surface border border-border rounded-xl">
                 <Icon name="BarChart3" size={32} className="text-primary mx-auto mb-4" />
@@ -187,19 +187,19 @@ const Web3Dashboard = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button 
-                onClick={() => navigate('/auth')} 
+              <Button
+                onClick={() => navigate('/auth')}
                 size="lg"
                 className="px-8 py-4 text-lg"
               >
                 <Icon name="User" size={20} className="mr-2" />
                 Sign Up / Sign In
               </Button>
-              
+
               <span className="text-text-muted">or</span>
-              
-              <Button 
-                onClick={handleConnect} 
+
+              <Button
+                onClick={handleConnect}
                 variant="outline"
                 size="lg"
                 className="px-8 py-4 text-lg"
@@ -284,11 +284,10 @@ const Web3Dashboard = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === tab.id
+                className={`flex items-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id
                     ? 'border-primary text-primary'
                     : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-dark'
-                }`}
+                  }`}
               >
                 <Icon name={tab.icon} size={16} />
                 {tab.label}
@@ -307,7 +306,7 @@ const Web3Dashboard = () => {
               <span className="font-medium">Error</span>
             </div>
             <p className="text-sm mt-1">{error}</p>
-            <button 
+            <button
               onClick={() => setError(null)}
               className="mt-2 text-sm underline hover:no-underline"
             >

@@ -47,12 +47,12 @@ const PortfolioDashboard = () => {
 
     try {
       setError(null);
-      
+
       // Load portfolios
       const portfoliosResult = await portfolioService.getPortfolios();
       if (portfoliosResult?.success && portfoliosResult?.data?.length > 0) {
         const portfolio = portfoliosResult.data[0]; // Use first portfolio
-        
+
         setPortfolioData({
           totalValue: parseFloat(portfolio?.total_value || 0),
           change24h: parseFloat(portfolio?.total_change_percent_24h || 0),
@@ -97,9 +97,9 @@ const PortfolioDashboard = () => {
         const formattedTransactions = transactionsResult.data.map(tx => ({
           id: tx?.id,
           type: tx?.type,
-          asset: { 
-            symbol: tx?.assets?.symbol || '', 
-            logo: tx?.assets?.logo_url || '' 
+          asset: {
+            symbol: tx?.assets?.symbol || '',
+            logo: tx?.assets?.logo_url || ''
           },
           amount: parseFloat(tx?.amount || 0),
           value: parseFloat(tx?.total_value || 0),
@@ -113,9 +113,9 @@ const PortfolioDashboard = () => {
       if (alertsResult?.success) {
         const formattedAlerts = alertsResult.data.map(alert => ({
           id: alert?.id,
-          asset: { 
-            symbol: alert?.assets?.symbol || '', 
-            logo: alert?.assets?.logo_url || '' 
+          asset: {
+            symbol: alert?.assets?.symbol || '',
+            logo: alert?.assets?.logo_url || ''
           },
           condition: alert?.condition,
           price: parseFloat(alert?.target_price || 0),
@@ -192,7 +192,7 @@ const PortfolioDashboard = () => {
 
     const initializeData = async () => {
       if (authLoading) return;
-      
+
       if (!user) {
         // Preview mode - show demo message
         setLoading(false);
@@ -230,7 +230,7 @@ const PortfolioDashboard = () => {
         ...alertData,
         user_id: user?.id
       });
-      
+
       if (result?.success) {
         setPriceAlerts(prev => [...prev, {
           id: result.data.id,
@@ -249,7 +249,7 @@ const PortfolioDashboard = () => {
   const handleRemoveAlert = async (alertId) => {
     try {
       const result = await alertService.deletePriceAlert(alertId);
-      
+
       if (result?.success) {
         setPriceAlerts(prev => prev.filter(alert => alert.id !== alertId));
       }
@@ -285,7 +285,7 @@ const PortfolioDashboard = () => {
     const handleTouchMove = (e) => {
       currentY = e.touches[0].clientY;
       const pullDistance = currentY - startY;
-      
+
       if (pullDistance > 100 && window.scrollY === 0 && !isRefreshTriggered) {
         isRefreshTriggered = true;
         handleRefresh();
@@ -355,7 +355,7 @@ const PortfolioDashboard = () => {
                 <span className="font-medium">Error</span>
               </div>
               <p className="text-sm mt-1">{error}</p>
-              <button 
+              <button
                 onClick={handleRefresh}
                 className="mt-2 text-sm underline hover:no-underline"
               >
@@ -371,35 +371,35 @@ const PortfolioDashboard = () => {
   const renderOverviewTab = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <div className="xl:col-span-2">
-        <PortfolioSummaryCard 
+        <PortfolioSummaryCard
           portfolioData={portfolioData}
           onCurrencyToggle={handleCurrencyToggle}
           loading={loading}
         />
       </div>
       <div className="lg:col-span-1">
-        <AssetAllocationChart 
+        <AssetAllocationChart
           data={allocationData}
           isExpanded={expandedWidgets.allocation}
           onToggleExpand={() => handleWidgetToggle('allocation')}
         />
       </div>
       <div className="lg:col-span-1">
-        <TopPerformingAssets 
+        <TopPerformingAssets
           assets={topAssets}
           isExpanded={expandedWidgets.topAssets}
           onToggleExpand={() => handleWidgetToggle('topAssets')}
         />
       </div>
       <div className="lg:col-span-1">
-        <RecentTransactions 
+        <RecentTransactions
           transactions={recentTransactions}
           isExpanded={expandedWidgets.transactions}
           onToggleExpand={() => handleWidgetToggle('transactions')}
         />
       </div>
       <div className="xl:col-span-1">
-        <PriceAlertsPanel 
+        <PriceAlertsPanel
           alerts={priceAlerts}
           isExpanded={expandedWidgets.alerts}
           onToggleExpand={() => handleWidgetToggle('alerts')}
@@ -412,12 +412,12 @@ const PortfolioDashboard = () => {
 
   const renderAssetsTab = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <AssetAllocationChart 
+      <AssetAllocationChart
         data={allocationData}
         isExpanded={true}
         onToggleExpand={() => handleWidgetToggle('allocation')}
       />
-      <TopPerformingAssets 
+      <TopPerformingAssets
         assets={topAssets}
         isExpanded={true}
         onToggleExpand={() => handleWidgetToggle('topAssets')}
@@ -427,18 +427,18 @@ const PortfolioDashboard = () => {
 
   const renderPerformanceTab = () => (
     <div className="space-y-6">
-      <PerformanceChart 
+      <PerformanceChart
         data={performanceData}
         isExpanded={expandedWidgets.performance}
         onToggleExpand={() => handleWidgetToggle('performance')}
       />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TopPerformingAssets 
+        <TopPerformingAssets
           assets={topAssets}
           isExpanded={expandedWidgets.topAssets}
           onToggleExpand={() => handleWidgetToggle('topAssets')}
         />
-        <RecentTransactions 
+        <RecentTransactions
           transactions={recentTransactions}
           isExpanded={expandedWidgets.transactions}
           onToggleExpand={() => handleWidgetToggle('transactions')}
@@ -449,14 +449,14 @@ const PortfolioDashboard = () => {
 
   const renderAlertsTab = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <PriceAlertsPanel 
+      <PriceAlertsPanel
         alerts={priceAlerts}
         isExpanded={true}
         onToggleExpand={() => handleWidgetToggle('alerts')}
         onAddAlert={handleAddAlert}
         onRemoveAlert={handleRemoveAlert}
       />
-      <TopPerformingAssets 
+      <TopPerformingAssets
         assets={topAssets}
         isExpanded={expandedWidgets.topAssets}
         onToggleExpand={() => handleWidgetToggle('topAssets')}
@@ -482,7 +482,7 @@ const PortfolioDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="pt-16 pb-20 lg:pb-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Refresh Indicator */}
@@ -506,7 +506,7 @@ const PortfolioDashboard = () => {
           </div>
 
           {/* Navigation Tabs */}
-          <NavigationTabs 
+          <NavigationTabs
             activeTab={activeTab}
             onTabChange={setActiveTab}
           />
@@ -519,7 +519,7 @@ const PortfolioDashboard = () => {
       </main>
 
       {/* Quick Actions FAB */}
-      <QuickActionsFAB 
+      <QuickActionsFAB
         onAddTransaction={handleAddTransaction}
         onConnectWallet={handleConnectWallet}
       />
