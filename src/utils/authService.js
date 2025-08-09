@@ -30,20 +30,61 @@ const authService = {
   // Sign in with Google
   signInWithGoogle: async () => {
     try {
+      // Check if we're in a secure context (required for OAuth)
+      if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+        return { 
+          success: false, 
+          error: 'Google sign-in requires a secure connection (HTTPS)' 
+        };
+      }
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/portfolio-dashboard`
+          redirectTo: `${window.location.origin}/portfolio-dashboard`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         }
       });
 
       if (error) {
+        console.error('Google OAuth error:', error);
+        
+        // Handle specific error cases
+        if (error.message.includes('popup')) {
+          return { 
+            success: false, 
+            error: 'Please allow popups for this site and try again' 
+          };
+        }
+        
+        if (error.message.includes('redirect')) {
+          return { 
+            success: false, 
+            error: 'OAuth redirect configuration error. Please contact support.' 
+          };
+        }
+        
         return { success: false, error: error.message };
       }
 
       return { success: true, data };
     } catch (error) {
       console.error('Google sign in error:', error);
+      
+      if (error.name === 'AbortError') {
+        return { success: false, error: 'Sign-in was cancelled' };
+      }
+      
+      if (error.message?.includes('network')) {
+        return { 
+          success: false, 
+          error: 'Network error. Please check your connection and try again.' 
+        };
+      }
+      
       return { success: false, error: 'Something went wrong with Google sign-in. Please try again.' };
     }
   },

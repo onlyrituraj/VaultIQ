@@ -116,8 +116,11 @@ const AuthPage = () => {
       if (result?.success) {
         // Google OAuth will redirect automatically
         // The redirect URL is set to /portfolio-dashboard in authService
+      } else if (result?.error) {
+        setFormError(result.error);
       }
     } catch (error) {
+      console.error('Google sign-in error:', error);
       setFormError('Google sign-in failed. Please try again.');
     } finally {
       setIsLoading(false);
